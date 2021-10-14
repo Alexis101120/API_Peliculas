@@ -30,6 +30,7 @@ namespace API_Peliculas.Controllers
             _mapper = mapper;
             _almacenador = almacenadorArchivos;
         }
+        //Texto de prueba
 
         [HttpGet]
         public async Task<ActionResult<List<ActorDTO>>> Get([FromQuery] Paginacion Paginacin)
