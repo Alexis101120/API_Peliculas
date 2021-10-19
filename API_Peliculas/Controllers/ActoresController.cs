@@ -41,8 +41,7 @@ namespace API_Peliculas.Controllers
         [HttpGet("{id}", Name = "obtenerActor")]
         public async Task<ActionResult<ActorDTO>>Get(int id)
         {
-            var Actor = await _db.Actores.FirstOrDefaultAsync(x => x.Id == id);
-            return _mapper.Map<ActorDTO>(Actor);
+            return await Get<Actor, ActorDTO>(id);
         }
 
         [HttpPost]
@@ -94,40 +93,13 @@ namespace API_Peliculas.Controllers
         [HttpPatch("{id}")]
         public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<ActorPatchDTO> item)
         {
-            if (item == null)
-            {
-                return BadRequest();
-            }
-            var ActorDb = await _db.Actores.FirstOrDefaultAsync(x => x.Id == id);
-            if(ActorDb == null)
-            {
-                return BadRequest();
-            }
-
-            var ActorDTO = _mapper.Map<ActorPatchDTO>(ActorDb);
-            item.ApplyTo(ActorDTO,ModelState);
-            var esValido = TryValidateModel(ActorDTO);
-            if (!esValido)
-            {
-                return BadRequest(ModelState);
-            }
-            _mapper.Map(ActorDTO, ActorDb);
-            await _db.SaveChangesAsync();
-            return NoContent();
+            return await Patch<Actor, ActorPatchDTO>(id, item);
         }
 
         [HttpDelete("{id:int}")]
         public async Task<ActionResult> Delete(int id)
         {
-            var Existe = await _db.Actores.AnyAsync(x => x.Id == id);
-            if (!Existe)
-            {
-                return NotFound();
-            }
-
-            _db.Actores.Remove(new Actor { Id = id });
-            _db.SaveChanges();
-            return NoContent();
+            return await Delete<Actor>(id);
         }
     }
 }

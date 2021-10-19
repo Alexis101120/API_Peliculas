@@ -1,5 +1,6 @@
 ﻿using API_Peliculas.DTO;
 using API_Peliculas.Entidades;
+using API_Peliculas.Helpers;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -38,13 +39,13 @@ namespace API_Peliculas.Controllers
             return await Get<Genero, GeneroDTO>(id);
         }
 
-        protected async Task<List<TDTO>> Get<TEntidad, TDTO>( paginacionDTO,
+        protected async Task<List<TDTO>> Get<TEntidad, TDTO>( Paginacion paginacionDTO,
            IQueryable<TEntidad> queryable)
            where TEntidad : class
         {
-            await HttpContext.InsertarParametrosPaginacion(queryable, paginacionDTO.CantidadRegistrosPorPagina);
+            await HttpContext.InsertarParametrosPaginacion(queryable, paginacionDTO.cantidadRegistosPagina);
             var entidades = await queryable.Paginar(paginacionDTO).ToListAsync();
-            return mapper.Map<List<TDTO>>(entidades);
+            return _mapper.Map<List<TDTO>>(entidades);
         }
 
         [HttpPost]
